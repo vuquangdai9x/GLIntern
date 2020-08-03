@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Render">
+      <UniqueIdentifier>{38cf424b-9295-4b8c-b1eb-41a92ee65ee7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics">
+      <UniqueIdentifier>{a52e5e1a-8103-4da4-9344-e0c548a4a0a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics\shapes">
+      <UniqueIdentifier>{000f38a1-da5d-41aa-91d8-95023f6afc16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics\effects">
+      <UniqueIdentifier>{6f9f014a-103b-40f3-8b4f-f7ce02c8c0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics\physics">
+      <UniqueIdentifier>{236ca91f-9173-488f-b82f-8f7345371d1d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\define.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="source\log.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="source\matrix.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="source\openGLESv2.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="source\shaderManager.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="source\videoDriver.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\SceneManager.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\TouchManager.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\Vector2.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\Circle.h">
+      <Filter>physics\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\Rectangle.h">
+      <Filter>physics\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\Plane.h">
+      <Filter>physics\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\ShapeObject.h">
+      <Filter>physics\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\Effect.h">
+      <Filter>physics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\EffectManager.h">
+      <Filter>physics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\Firework.h">
+      <Filter>physics\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\CollisionInfo.h">
+      <Filter>physics\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\PhysicsManager.h">
+      <Filter>physics\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\UltilityFunction.h">
+      <Filter>physics\effects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\matrix.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="source\shaderManager.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="source\videoDriver.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="physics\SceneManager.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\TouchManager.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\ShapeObject.cpp">
+      <Filter>physics\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\EffectManager.cpp">
+      <Filter>physics\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\CollisionInfo.cpp">
+      <Filter>physics\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\PhysicsManager.cpp">
+      <Filter>physics\physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="physics\ObjectList.txt">
+      <Filter>physics</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

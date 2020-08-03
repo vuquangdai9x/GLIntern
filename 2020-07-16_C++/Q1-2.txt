@@ -1,0 +1,25 @@
+Q1.2
+Danh sách các environment variables trong VSExpress: https://docs.microsoft.com/en-us/cpp/build/reference/common-macros-for-build-commands-and-properties
+Các thành phần trong General Tab:
+	Output Directory: Đường dẫn tương đối tới nơi output các file. Chứa các file .obj, log
+		$(SolutionDir): biến môi trường, là đường dẫn tới solution
+		$(Configuration): config hiện tại của project, có thể là "Debug" hoặc "Release"
+	Intermediate Directory: Đường dẫn tương đối tới thư mục để build ra các file thực thi (.exe)
+	Extensions to Delete on Clean: Danh sách các file sẽ bị xóa đi khi clean hoặc rebuild
+	Build Log File: Đường dẫn để ghi các file log khi bật build logging
+		$(IntDir): Intermediate Directory
+	Configuration Type: loại file tạo ra khi tiến hành build
+
+Q1.3
+Chạy chương trình với tham số: 5 hello from the other side
+Kết quả:
+	Number of Param 7
+	param[0] = D:\MyWorkingCopy\2020-07-16_C++\PracticeCpp\Debug\Q1_3.exe
+	param[1] = 5
+	param[2] = hello
+	param[3] = from
+	param[4] = the
+	param[5] = other
+	param[6] = side
+Giải thích: 
+	Có tất cả 7 tham số khi gọi entry point của chương trình: đường dẫn tới thư mục chứa file thực thi, n, các tham số còn lại

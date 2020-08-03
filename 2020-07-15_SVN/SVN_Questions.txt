@@ -1,0 +1,47 @@
+SVN Questions
+1.
+Có 2 cách để tạo một repository mới trên Server:
+Cách 1: sử dụng command line
+Cách 2: sử dụng phần mềm hỗ trợ giao diện đồ họa, ví dụ: tortoiseSVN
+	1. Tạo folder mới, đặt tên cho repo
+	2. Click chuột phải -> TortoiseSVN -> Create repository here
+
+2.
+2.1
+Vẫn có thể still commit/update/add/delete files/folders trong EXCERCISE2 vì khi copy, trong folder vẫn chứa phần để máy tính nhận biết được đây là một folder sử dụng SVN.
+Thành phần này là các file trong thư mục ẩn .svn nằm trong thư mục EXCERCISE2.
+2.2
+SVN link của EXCERCISE2 được link tới server chứa repo
+
+3.
+3.1
+Conflict xảy ra trong một số trường hợp
+- Khi commit: xảy ra khi có nhiều working copy cùng làm việc trên một phiên bản mà không đồng bộ với nhau, có thể tạo ra các file khác nhau. Khi một bên A commit lên repo và được chấp nhận, một bên B commit lên mà có chứa file khác với A thì sẽ xảy ra conflict, không thể commit lên server
+- Khi update: tương tự trường hợp trên. A và B cùng làm việc trên 1 phiên bản. Trong khi bên A đang làm việc trên working copy, B đã commit lên repo, có thay đổi so với những file mà A đang làm việc. Khi A update sẽ xảy ra conflict.
+- Khi merge: 2 nhánh có các folder, file với nội dung khác nhau, khi merge sẽ xảy ra xung đột.
+3.2
+"Conflict in a folder": Do có sự khác nhau giữa tên folder, vị trí của các file, folder con trong một folder.
+"Conflict in a file": Do có sự khác nhau giữa nội dung file: thay đổi về các dòng mã...
+3.3
+Khi xảy ra conflict, cần giải quyết (resolve conflict)
+Với conflict liên quan đến file, có các cách giải quyết:
+	- Chọn lấy 1 trong 2 file 
+	- So sánh 2 file, lựa chọn các dòng mã có sự khác nhau giữa 2 file
+Với conflict folder: 2 bên xảy ra conflict cần theo dõi lại và thống nhất cách tổ chức folder
+
+4. 
+Các trường hợp dẫn đến Update fail:
+	- Xảy ra conflict và chưa giải quyết được
+	- Lỗi kết nối với server repo
+
+5.
+5.1
+"Revert to this Revision": đưa trạng thái của working repo về giống với một phiên bản trước đó (các lần commit trước)
+"Revert changes from these Revision": tạo một trạng thái mới, trong đó loại bỏ thay đổi từ một số revision
+5.2
+Không thể sử dụng chức năng Revert khi mở RepoBrowser vì RepoBrowser là chức năng dùng để theo dõi các file, tổ chức thư mục trong các branch và revision trước đó, không có chức năng revert.
+5.3
+Nếu xảy ra trường hợp không tìm thấy revision nào:
+- Kiểm tra các thanh công cụ hỗ trợ tìm kiếm: ngày tháng tìm kiếm có chứa revision nào không
+- Chọn Show All để hiển thị toàn bộ các revision
+- Nếu không có revision nào, có khả năng là vì chưa có lần commit nào lên server
