@@ -1,6 +1,6 @@
 uniform mat4 u_wvp;
-uniform sampler2D u_heightmap;
-uniform float u_heightmapScaleFactor;
+//uniform sampler2D u_heightmap;
+//uniform float u_heightmapScaleFactor;
 
 uniform float u_fogStart;
 uniform float u_fogLength;
@@ -21,6 +21,7 @@ void main()
 	gl_Position = position;
 
 	float distanceToCam = sqrt(position.x*position.x+position.y*position.y+position.z*position.z);
+	//float distanceToCam = position.z;
 	v_fogDensity = clamp((distanceToCam-u_fogStart)/u_fogLength,0.0,1.0);
 
 	v_uv = a_uv;

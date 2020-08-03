@@ -13,8 +13,8 @@ SceneManager::~SceneManager()
 }
 
 void SceneManager::Init(char * dataSceneFile) {
-	m_fogStart = 200;
-	m_fogLength = 500;
+	m_fogStart = 750;
+	m_fogLength = 300;
 	m_fogColor = Vector4(1,.9,.9,1);
 
 	const char *resourceDir = Globals::resourceDir;

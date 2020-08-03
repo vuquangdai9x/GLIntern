@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "Model3D.h"
 #include "Texture.h"
 #include "Shaders.h"

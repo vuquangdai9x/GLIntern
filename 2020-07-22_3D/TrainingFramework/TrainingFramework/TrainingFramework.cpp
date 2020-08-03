@@ -41,8 +41,10 @@ int Init ( ESContext *esContext )
 void Draw ( ESContext *esContext )
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND); 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	SceneManager::GetInstance()->Render();
 	eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
 }
@@ -51,6 +53,7 @@ void Update ( ESContext *esContext, float deltaTime )
 {
 	InputManager::GetInstance()->Update(deltaTime);
 	SceneManager::GetInstance()->Update(deltaTime);
+	SceneManager::GetInstance()->m_time += deltaTime;
 }
 
 void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
@@ -66,8 +69,6 @@ void CleanUp()
 int _tmain(int argc, _TCHAR* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-	
 
 	ESContext esContext;
 

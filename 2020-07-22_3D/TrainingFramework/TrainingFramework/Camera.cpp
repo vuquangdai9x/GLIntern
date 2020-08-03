@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Camera.h"
 #include "AnimationFunction.h"
-#include <math.h>
 
 void Camera::UpdateViewMatrix()
 {

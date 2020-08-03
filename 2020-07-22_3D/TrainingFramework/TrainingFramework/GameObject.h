@@ -1,10 +1,7 @@
 #pragma once
-#include "Math.h"
-#include "../Utilities/utilities.h"
 #include "Camera.h"
 #include "Model3D.h"
 #include "Material.h"
-
 
 class GameObject {
 private:

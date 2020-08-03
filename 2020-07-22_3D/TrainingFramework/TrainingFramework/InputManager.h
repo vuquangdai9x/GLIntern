@@ -1,4 +1,6 @@
 #pragma once
+#include "stdafx.h"
+
 class InputManager {
 protected:
 	InputManager();
@@ -30,9 +32,8 @@ protected:
 	static InputManager * ms_pInstance;
 
 private:
-	unsigned int m_maskKeyPressed, m_maskKeyPressedPrevFrame;
-	float m_smoothTime;
-	enum Key {A,D,W,S,LSHIFT,SPACE,UP,DOWN,LEFT,RIGHT};
+	unsigned int m_maskKeyPressed = 0, m_maskKeyPressedPrevFrame = 0;
+	enum Key {A,D,W,S,LSHIFT,SPACE,UP,DOWN,LEFT,RIGHT,N1,N2,N3,N4};
 
 	//void SetBit(unsigned int mask, int offset);
 	//bool CheckBit(unsigned int mask, int offset);

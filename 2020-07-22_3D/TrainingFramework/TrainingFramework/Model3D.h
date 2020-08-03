@@ -2,7 +2,6 @@
 #include "stdafx.h"
 #include "Vertex.h"
 #include "Shaders.h"
-#include "../Utilities/utilities.h"
 
 class Model3D {
 public:
@@ -14,4 +13,5 @@ public:
 	int m_iNumOfVertex, m_iNumOfIndice;
 
 	bool LoadFromFile(char* filePath, char* heightMapFile = NULL, float heightMapScale = 1);
+	bool LoadFromRaw(char* filePath, float heightMapScale = 1);
 };

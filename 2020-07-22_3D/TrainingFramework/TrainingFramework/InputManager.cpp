@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "InputManager.h"
-
 #include "SceneManager.h"
 
 InputManager * InputManager::ms_pInstance = nullptr;
@@ -66,6 +65,18 @@ void InputManager::KeyPressed(unsigned char key, bool isKeyPressed)
 		case VK_RIGHT:
 			SetBit(m_maskKeyPressed, Key::RIGHT);
 			break;
+		case '1':
+			SetBit(m_maskKeyPressed, Key::N1);
+			break;
+		case '2':
+			SetBit(m_maskKeyPressed, Key::N2);
+			break;
+		case '3':
+			SetBit(m_maskKeyPressed, Key::N3);
+			break;
+		case '4':
+			SetBit(m_maskKeyPressed, Key::N4);
+			break;
 		}
 	}
 	else {
@@ -106,6 +117,18 @@ void InputManager::KeyPressed(unsigned char key, bool isKeyPressed)
 			break;
 		case VK_RIGHT:
 			UnsetBit(m_maskKeyPressed, Key::RIGHT);
+			break;
+		case '1':
+			UnsetBit(m_maskKeyPressed, Key::N1);
+			break;
+		case '2':
+			UnsetBit(m_maskKeyPressed, Key::N2);
+			break;
+		case '3':
+			UnsetBit(m_maskKeyPressed, Key::N3);
+			break;
+		case '4':
+			UnsetBit(m_maskKeyPressed, Key::N4);
 			break;
 		}
 	}
@@ -183,4 +206,7 @@ void InputManager::Update(float deltaTime) {
 	cameraRotateDirection.y += GetBit(m_maskKeyPressed, Key::RIGHT);
 	SceneManager::GetInstance()->GetMainCamera().Rotate(cameraRotateDirection);
 	//SceneManager::GetInstance()->GetMainCamera().RotateSmooth(cameraRotateDirection);
+
+	SceneManager::GetInstance()->m_fogStart += (GetBit(m_maskKeyPressed, Key::N2) - GetBit(m_maskKeyPressed, Key::N1));
+	SceneManager::GetInstance()->m_fogLength += (GetBit(m_maskKeyPressed, Key::N4) - GetBit(m_maskKeyPressed, Key::N3));
 }

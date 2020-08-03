@@ -93,6 +93,12 @@
     <ClCompile Include="vertex.cpp">
       <Filter>Source Files\objects</Filter>
     </ClCompile>
+    <ClCompile Include="ShadersFire.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialFire.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationFunction.h">
@@ -148,6 +154,12 @@
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadersFire.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialFire.h">
+      <Filter>Header Files\render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +234,12 @@
       <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="..\Resources\Shaders\TerrainShaderVS.vs">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="..\Resources\Shaders\FireShaderFS.fs">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="..\Resources\Shaders\FireShaderVS.vs">
       <Filter>Resources\Shaders</Filter>
     </None>
   </ItemGroup>

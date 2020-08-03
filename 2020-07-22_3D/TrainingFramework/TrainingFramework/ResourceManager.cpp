@@ -4,6 +4,7 @@
 #include "MaterialSingleTexture.h"
 #include "ShadersTerrain.h"
 #include "MaterialTerrain.h"
+#include "MaterialFire.h"
 #include "Globals.h"
 
 ResourceManager::ResourceManager()
@@ -210,11 +211,11 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		if (strcmp("SINGLE", shaderType) == 0) {
 			shader = new ShadersSingleTex(iShaderId);
 		}
-		/*else if (strcmp("CUBE", shaderType) == 0) {
-			shader = new ShadersCubeTex(iShaderId);
-		}*/
 		else if (strcmp("TERRAIN", shaderType) == 0) {
 			shader = new ShadersTerrain(iShaderId);
+		}
+		else if (strcmp("FIRE", shaderType) == 0) {
+			shader = new ShadersFire(iShaderId);
 		}
 		else {
 			printf("[ERR] ResourceManager: There no material has this type\n");
@@ -278,11 +279,31 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 				if (pMaterialTerrain != NULL) pMaterialTerrain->AddHeightmap(iHeightmapId, heightmapScaleFactor);
 			}
 		}
+		else if (strcmp("FIRE", materialType) == 0) {
+			MaterialFire* pMaterialFire;
+			int iShaderId, iTexId, iDisplTexId, iAlphaMaskTexId;
+			float displMax, timeScale;
+			pMaterialFire = new MaterialFire(iMaterialId);
+			fscanf(fIn, "SHADER %d\n", &iShaderId);
+			fscanf(fIn, "TEXTURE %d\n", &iTexId);
+			fscanf(fIn, "DISPLTEX %d\n", &iDisplTexId);
+			fscanf(fIn, "ALPHAMASK %d\n", &iAlphaMaskTexId);
+			fscanf(fIn, "DISPLMAX %f\n", &displMax);
+			fscanf(fIn, "TIMESCALE %f\n", &timeScale);
+			if (pMaterialFire->Init(iShaderId, iTexId, iDisplTexId, iAlphaMaskTexId, displMax, timeScale)) {
+				m_aMaterial.push_back(pMaterialFire);
+				printf("[msg] ResourceManager: Loaded Material %d\n", iMaterialId);
+			}
+			else {
+				printf("[ERR] ResourceManager: Failed to load Material %d\n", iMaterialId);
+				delete pMaterialFire;
+				pMaterialFire = NULL;
+			}
+		}
 		else {
 			printf("[ERR] ResourceManager: There no material has this type\n");
 		}
 	}
-
 	fclose(fIn);
 }
 

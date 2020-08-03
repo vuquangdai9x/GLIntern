@@ -1,6 +1,5 @@
 #pragma once
-#include <math.h>
-
+#include "stdafx.h"
 class AnimationFunction {
 public:
 	static float EaseInOut(float start, float end, float value);

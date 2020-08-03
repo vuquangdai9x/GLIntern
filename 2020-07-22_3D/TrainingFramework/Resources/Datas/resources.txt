@@ -70,7 +70,7 @@ FILE "Textures/envMap.tga"
 TILING CLAMP
 ID 5
 FILE "Textures/fire3.tga"
-TILING REPEAT
+TILING MIRROR
 ID 6
 FILE "Textures/fire_mask.tga"
 TILING REPEAT
@@ -136,7 +136,7 @@ ID 24 ONE
 FILE "Textures/envMap.tga"
 TILING CLAMP
 
-#Shaders: 3
+#Shaders: 4
 ID 0 SINGLE
 VS: "Shaders/TriangleShaderVS.vs"
 FS: "Shaders/TriangleShaderFS.fs"
@@ -155,8 +155,14 @@ FS: "Shaders/TerrainShaderFS.fs"
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
+ID 3 FIRE
+VS: "Shaders/FireShaderVS.vs"
+FS: "Shaders/FireShaderFS.fs"
+STATES 2
+STATE CULLING
+STATE DEPTH_TEST
 
-#Materials: 5
+#Materials: 6
 ID 0 SINGLE
 SHADER 1
 TEXTURE 23
@@ -178,3 +184,11 @@ HEIGHTMAP 1 10 10.0
 ID 4 SINGLE
 SHADER 1
 TEXTURE 24
+
+ID 5 FIRE
+SHADER 3
+TEXTURE 5
+DISPLTEX 3
+ALPHAMASK 6
+DISPLMAX 0.1
+TIMESCALE 1

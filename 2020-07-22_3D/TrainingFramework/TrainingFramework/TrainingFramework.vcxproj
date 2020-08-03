@@ -101,11 +101,13 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialFire.cpp" />
     <ClCompile Include="MaterialSingleTexture.cpp" />
     <ClCompile Include="MaterialTerrain.cpp" />
     <ClCompile Include="Model3D.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ShadersFire.cpp" />
     <ClCompile Include="ShadersSingleTex.cpp" />
     <ClCompile Include="ShadersTerrain.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -119,6 +121,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="MaterialFire.h" />
+    <ClInclude Include="ShadersFire.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InputManager.h" />
@@ -157,6 +161,8 @@
     <None Include="..\Resources\Models\Woman2.nfg" />
     <None Include="..\Resources\Shaders\CubeShaderFS.fs" />
     <None Include="..\Resources\Shaders\CubeShaderVS.vs" />
+    <None Include="..\Resources\Shaders\FireShaderFS.fs" />
+    <None Include="..\Resources\Shaders\FireShaderVS.vs" />
     <None Include="..\Resources\Shaders\TerrainShaderFS.fs" />
     <None Include="..\Resources\Shaders\TerrainShaderVS.vs" />
     <None Include="..\Resources\Shaders\TriangleShaderFS.fs" />

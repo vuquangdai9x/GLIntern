@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <Windows.h>
+#include "Math.h"
+#include "../Utilities/utilities.h"
 
 
 // TODO: reference additional headers your program requires here

@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 #include "GameObject.h"
 #include <vector>
 #include "Camera.h"
@@ -39,6 +40,7 @@ private:
 public:
 	float m_fogStart, m_fogLength;
 	Vector4 m_fogColor;
+	float m_time = 0;
 
 	void Update(float frameTime);
 	void Render();
