@@ -137,25 +137,25 @@ FILE "Textures/envMap.tga"
 TILING CLAMP
 
 #Shaders: 4
-ID 0 SINGLE
+ID 0
 VS: "Shaders/TriangleShaderVS.vs"
 FS: "Shaders/TriangleShaderFS.fs"
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
-ID 1 SINGLE
+ID 1
 VS: "Shaders/CubeShaderVS.vs"
 FS: "Shaders/CubeShaderFS.fs"
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
-ID 2 TERRAIN
+ID 2
 VS: "Shaders/TerrainShaderVS.vs"
 FS: "Shaders/TerrainShaderFS.fs"
 STATES 2
 STATE CULLING
 STATE DEPTH_TEST
-ID 3 FIRE
+ID 3
 VS: "Shaders/FireShaderVS.vs"
 FS: "Shaders/FireShaderFS.fs"
 STATES 2

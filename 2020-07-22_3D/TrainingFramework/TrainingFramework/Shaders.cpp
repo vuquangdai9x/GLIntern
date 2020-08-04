@@ -19,20 +19,7 @@ bool Shaders::Init(char * fileVertexShader, char * fileFragmentShader)
 	}
 
 	program = esLoadProgram(vertexShader, fragmentShader);
-
-	//finding location of uniforms / attributes
-	m_a_positionLocation = glGetAttribLocation(program, "a_posL");
-	//colorAttribute = glGetAttribLocation(program, "a_color");
-	m_a_normalLocation = glGetAttribLocation(program, "a_normal");
-	m_a_binormalLocation = glGetAttribLocation(program, "a_binormal");
-	m_a_tangentLocation = glGetAttribLocation(program, "a_tangent");
-	m_a_uvLocation = glGetAttribLocation(program, "a_uv");
-	m_u_wvpLocation = glGetUniformLocation(program, "u_wvp");
-
-	m_u_fogStartLocation = glGetUniformLocation(program, "u_fogStart");
-	m_u_fogLengthLocation = glGetUniformLocation(program, "u_fogLength");
-	m_u_fogColor = glGetUniformLocation(program, "u_fogColor");
-
+	
 	return true;
 }
 

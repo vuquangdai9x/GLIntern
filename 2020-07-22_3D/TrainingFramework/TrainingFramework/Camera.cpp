@@ -12,122 +12,111 @@ void Camera::UpdateViewMatrix()
 
 Camera::Camera()
 {
-	m_smoothTime = 0.2f;
-	m_smoothFunc = AnimationFunction::EaseOutCirc;
-	m_moveSpeed = 0.05;
-	m_flySpeed = 0.05;
-	m_rotateSpeed = 0.5 * (2 * 3.1416 / 360);
 	m_up = Vector3(0, 1, 0);
-	m_rotateLimit = 10 * (2 * 3.1416 / 360);
-	m_timeCounterMove = m_timeCounterFly = m_timeCounterRotate = -1;
 }
 
-void Camera::Init(Vector3 position, Vector3 target, float nearPlane, float farPlane, float FOV, float aspectRatio)
+void Camera::Init(Vector3 position, Vector3 target, float nearPlane, float farPlane, float FOV, float aspectRatio, float rotateVerticalLimit)
 {
-	m_target = target;
+	m_rotateLimit = rotateVerticalLimit;
 	m_position = position;
-	m_zaxis = (m_position-m_target).Normalize();
-	m_xaxis = (m_up.Cross(m_zaxis)).Normalize();
-	m_yaxis = (m_zaxis.Cross(m_xaxis)).Normalize();
-	UpdateViewMatrix();
+	SetTarget(target);
+	SetPerspective(FOV, aspectRatio, nearPlane, farPlane);
+}
+
+void Camera::SetPerspective(float FOV, float aspectRatio, float nearPlane, float farPlane)
+{
 	m_PerspectiveMatrix.SetPerspective(FOV, aspectRatio, nearPlane, farPlane);
 }
 
-void Camera::SetSpeed(float move, float fly, float rotate)
+void Camera::SetSpeed(float moveSpeedX, float moveSpeedY, float moveSpeedZ, float rotateSpeedHorizontal, float rotateSpeedVertical, float dutchSpeed)
 {
-	m_moveSpeed = move;
-	m_flySpeed = fly;
-	m_rotateSpeed = rotate;
+	m_moveSpeedX = moveSpeedX;
+	m_moveSpeedY = moveSpeedY;
+	m_moveSpeedZ = moveSpeedZ;
+	m_rotateSpeedHorizontal = rotateSpeedHorizontal;
+	m_rotateSpeedVertical = rotateSpeedVertical;
+	m_dutchSpeed = dutchSpeed;
 }
 
-void Camera::Update(float deltaTime)
+void Camera::SetTarget(Vector3 newTargetPos)
 {
-	if (m_timeCounterMove > 0) {
-		MoveRelative(m_moveDirection, m_smoothFunc(0,1,m_timeCounterMove / m_smoothTime));
-		m_timeCounterMove -= deltaTime;
-	}
-	if (m_timeCounterFly > 0) {
-		Fly(m_flyDirection, m_smoothFunc(0, 1, m_timeCounterFly / m_smoothTime));
-		m_timeCounterFly -= deltaTime;
-	}
-	if (m_timeCounterRotate > 0) {
-		Rotate(m_rotateDirection, m_smoothFunc(0, 1, m_timeCounterRotate / m_smoothTime));
-		m_timeCounterRotate -= deltaTime;
-	}
+	m_target = newTargetPos;
+	m_zaxis = (m_position - m_target).Normalize();
+	m_xaxis = (m_up.Cross(m_zaxis)).Normalize();
+	m_yaxis = (m_zaxis.Cross(m_xaxis)).Normalize();
+	UpdateViewMatrix();
 }
 
-void Camera::MoveSmooth(Vector3 localDirection) {
-	if (localDirection.Length() == 0) return;
-	m_timeCounterMove = m_smoothTime;
-	m_moveDirection = localDirection;
-}
-void Camera::RotateSmooth(Vector3 rotateDirection) {
-	if (rotateDirection.Length() == 0) return;
-	m_timeCounterRotate = m_smoothTime;
-	m_rotateDirection = rotateDirection;
-}
-void Camera::FlySmooth(int flyDirection) {
-	if (flyDirection == 0) return;
-	m_timeCounterFly = m_smoothTime;
-	m_flyDirection = flyDirection;
-}
-
-
-void Camera::OnDestroy()
+Vector3& Camera::GetPosition()
 {
+	return m_position;
 }
 
-void Camera::MoveRelative(Vector3 localDirection, float speedMultiplier)
+void Camera::MoveByLocalAxis(Vector3 localDirection, float deltaTime, float speedMultiplier)
 {
 	if (localDirection.Length() == 0) return;
 	Vector3 deltaMove;
 	deltaMove = (m_xaxis * localDirection.x) + (m_yaxis * localDirection.y) + (-m_zaxis * localDirection.z);
-	deltaMove = deltaMove.Normalize() * m_moveSpeed * speedMultiplier;
+	deltaMove = deltaMove.Normalize() * speedMultiplier * deltaTime;
+	deltaMove.x *= m_moveSpeedX;
+	deltaMove.y *= m_moveSpeedY;
+	deltaMove.z *= m_moveSpeedZ;
+
 	m_position += deltaMove;
 	m_target += deltaMove;
-
 	UpdateViewMatrix();
 }
 
-void Camera::Move(Vector3 worldDirection, float speedMultiplier)
+void Camera::MoveByWorldAxis(Vector3 worldDirection, float deltaTime, float speedMultiplier)
 {
 	if (worldDirection.Length() == 0) return;
-	Vector3 deltaMove = worldDirection.Normalize() * m_moveSpeed * speedMultiplier;
+	Vector3 deltaMove = worldDirection.Normalize() * speedMultiplier * deltaTime;
+	deltaMove.x *= m_moveSpeedX;
+	deltaMove.y *= m_moveSpeedY;
+	deltaMove.z *= m_moveSpeedZ;
+
 	m_position += deltaMove; 
 	m_target += deltaMove;
 	UpdateViewMatrix();
 }
 
-void Camera::Rotate(Vector3 direction, float speedMultiplier)
+void Camera::Rotate(float horizontal, float vertical, float deltaTime, float speedMultiplier)
 {
-	if (direction.Length() == 0) return;
-	direction = direction.Normalize() * m_rotateSpeed * speedMultiplier;
+	if (vertical == 0 && horizontal == 0) return;
+	float length = sqrt(vertical * vertical + horizontal * horizontal);
+	vertical = vertical / length * m_rotateSpeedVertical * speedMultiplier * deltaTime;
+	horizontal = horizontal / length * m_rotateSpeedHorizontal * speedMultiplier * deltaTime;
 
+	// limit up & down rotation
 	Vector3 worldDeltaPosCameraTarget = m_target - m_position;
 	float currAngle = acos(m_up.Dot(worldDeltaPosCameraTarget) / (worldDeltaPosCameraTarget.Length()));
-	if ((currAngle + direction.x < 0 + m_rotateLimit) || (currAngle + direction.x > 3.1416 - m_rotateLimit)) {
-		direction.x = 0;
+	if ((currAngle + vertical < 0 + m_rotateLimit) || (currAngle + vertical > M_PI - m_rotateLimit)) {
+		vertical = 0;
 	}
 
 	Vector4 localTargetPosition(0, 0, (m_position - m_target).Length(), 1);
-	Vector4 newLocalTargetPosition = localTargetPosition * Matrix().SetRotationZ(direction.z) * Matrix().SetRotationX(direction.x) * Matrix().SetRotationY(direction.y);
-
-	m_target = m_position + (m_xaxis*newLocalTargetPosition.x + m_yaxis*newLocalTargetPosition.y - m_zaxis*newLocalTargetPosition.z);
-
-	m_zaxis = (m_position - m_target).Normalize();
-	m_xaxis = (m_up.Cross(m_zaxis)).Normalize();
-	m_yaxis = (m_zaxis.Cross(m_xaxis)).Normalize();
-
-	//printf("%f ; %f ; %f \n", m_target.x, m_target.y, m_target.z);
-	UpdateViewMatrix();
+	Vector4 newLocalTargetPosition = localTargetPosition * Matrix().SetRotationX(vertical) * Matrix().SetRotationY(horizontal);
+	Vector3 newTarget = m_position + (m_xaxis*newLocalTargetPosition.x + m_yaxis*newLocalTargetPosition.y - m_zaxis*newLocalTargetPosition.z);
+	SetTarget(newTarget);
 }
 
-void Camera::Fly(int direction, float speedMultiplier)
+void Camera::SetVectorUp(Vector3 value)
 {
-	Vector3 deltaMove = Vector3(0,1,0) * m_flySpeed * speedMultiplier * direction;
-	m_position += deltaMove;
-	m_target += deltaMove;
-	UpdateViewMatrix();
+	m_up = value;
+	SetTarget(m_target); // set target again to recalculate x,y,z-axis
+}
+
+void Camera::Dutch(float angle, float deltaTime, float speedMultiplier)
+{
+	if (angle == 0) return;
+	angle = (angle>0?1:-1) * m_dutchSpeed * deltaTime * speedMultiplier;
+
+	Vector4 localUp(0, 0, 0, 0);
+	localUp.z = m_up.Dot(m_zaxis);
+	localUp.y = sqrt(1 - localUp.z * localUp.z);
+	localUp = localUp * Matrix().SetRotationZ(angle);
+	m_up = m_xaxis * localUp.x + m_yaxis * localUp.y + m_zaxis * localUp.z;
+	SetTarget(m_target); // set target again to recalculate x,y,z-axis
 }
 
 Matrix & Camera::GetViewMatrix()

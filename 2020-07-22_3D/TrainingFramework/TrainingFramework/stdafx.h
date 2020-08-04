@@ -6,12 +6,11 @@
 #pragma once
 
 #include "targetver.h"
-
 #include <stdio.h>
 #include <tchar.h>
 #include <Windows.h>
-#include "Math.h"
-#include "../Utilities/utilities.h"
-
 
 // TODO: reference additional headers your program requires here
+#define _USE_MATH_DEFINES 
+#include "Math.h"
+#include "../Utilities/utilities.h"

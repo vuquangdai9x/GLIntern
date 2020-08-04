@@ -4,34 +4,33 @@
 class Camera {
 private:
 	Matrix m_PerspectiveMatrix, m_ViewMatrix;
-	Vector3 m_target;
 	Vector3 m_up, m_xaxis, m_yaxis, m_zaxis;
-	Vector3 m_position;
-	float m_rotateLimit; // determine what angle with UP vector that can't rotate to (radian)
 
-	Vector3 m_rotateDirection, m_moveDirection;
-	int m_flyDirection;
-	float m_smoothTime, m_timeCounterMove, m_timeCounterFly, m_timeCounterRotate;
-	float(*m_smoothFunc)(float, float, float);
-	float m_moveSpeed, m_flySpeed, m_rotateSpeed; // rad/s
+	Vector3 m_target;
+	Vector3 m_position;
+	float m_rotateLimit = M_PI/2; // determine what angle with UP vector that can't rotate to (radian)
+
+	float m_moveSpeedX = 0, m_moveSpeedY = 0, m_moveSpeedZ = 0; // m/s
+	float m_rotateSpeedHorizontal = 0, m_rotateSpeedVertical = 0; // rad/s
+	float m_dutchSpeed = 0; //rad/s
 
 	void UpdateViewMatrix();
 public:
 	Camera();
-	void Init(Vector3 position, Vector3 target, float nearPlane, float farPlane, float FOV, float aspectRatio);
-	void SetSpeed(float move, float fly, float rotate);
-	void Update(float deltaTime);
-	void OnDestroy();
 
-	void MoveRelative(Vector3 localDirection, float speedMultiplier = 1);
-	void Move(Vector3 worldDirection, float speedMultiplier = 1);
-	void Rotate(Vector3 direction, float speedMultiplier = 1);
-	void Fly(int direction, float speedMultiplier = 1);
+	void Init(Vector3 position, Vector3 target, float nearPlane, float farPlane, float FOV, float aspectRatio, float rotateVerticalLimit);
+	void SetPerspective(float FOV, float aspectRatio, float nearPlane, float farPlane);
+	void SetSpeed(float moveXSpeed, float moveYSpeed, float moveZSpeed, float rotateHorizontalSpeed, float rotateVerticalSpeed, float dutchSpeed);
+	void SetTarget(Vector3 newTargetPos);
 
-	void MoveSmooth(Vector3 localDirection);
-	void RotateSmooth(Vector3 rotateDirection);
-	void FlySmooth(int flyDirection);
+	void MoveByLocalAxis(Vector3 localDirection, float deltaTime, float speedMultiplier = 1);
+	void MoveByWorldAxis(Vector3 worldDirection, float deltaTime, float speedMultiplier = 1);
+	void Rotate(float horizontal, float vertical, float deltaTime, float speedMultiplier = 1);
 
+	void SetVectorUp(Vector3 value);
+	void Dutch(float angle, float deltaTime, float speedMultiplier = 1);
+
+	Vector3& GetPosition();
 	Matrix & GetViewMatrix();
 	Matrix & GetPerspectiveMatrix();
 };

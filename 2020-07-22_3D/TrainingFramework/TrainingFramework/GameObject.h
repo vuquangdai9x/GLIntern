@@ -27,7 +27,7 @@ public:
 	void Rotate(Vector3 deltaRotation);
 	void SetRotation(Vector3 rotation);
 	Vector3 & GetRotation();
-	void Move(Vector3 deltaMove);
+	void MoveByWorldAxis(Vector3 deltaMove);
 	void SetPosition(Vector3 position);
 	Vector3 & GetPosition();
 	void SetScale(Vector3 scale);

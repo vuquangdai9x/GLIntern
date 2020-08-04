@@ -11,11 +11,15 @@ MaterialFire::MaterialFire(int id) : Material(id)
 bool MaterialFire::Init(int iShaderId, int iTextureId, int iDisplTextureId, int iAlphaMaskTexture2Id, float displMax, float timeScale)
 {
 	bool isLoadSuccessfully = true;
-	m_shader = dynamic_cast<ShadersFire*>(ResourceManager::GetInstance()->GetShader(iShaderId));
-	if (m_shader == NULL) {
-		if (m_shader == NULL) printf("[ERR] Material: Failed to get shader %d\n", iShaderId);
-		isLoadSuccessfully = false;
-	}
+	isLoadSuccessfully = Material::Init(iShaderId);
+	if (!isLoadSuccessfully) return false;
+
+	m_u_textureLocation = glGetUniformLocation(m_shader->program, "u_texture");
+	m_u_displTexLocation = glGetUniformLocation(m_shader->program, "u_displTex");
+	m_u_alphaMaskTexLocation = glGetUniformLocation(m_shader->program, "u_alphaMaskTex");
+	m_u_timeLocation = glGetUniformLocation(m_shader->program, "u_time");
+	m_u_displMaxLocation = glGetUniformLocation(m_shader->program, "u_displMax");
+
 	m_texture = ResourceManager::GetInstance()->GetTexture(iTextureId);
 	if (m_texture == NULL) {
 		printf("[ERR] Material Single Texture: Failed to get texture %d\n", m_texture);
@@ -36,72 +40,30 @@ bool MaterialFire::Init(int iShaderId, int iTextureId, int iDisplTextureId, int 
 	return isLoadSuccessfully;
 }
 
-void MaterialFire::PrepareShader(Matrix & m_WVP)
+void MaterialFire::PrepareShader(Matrix & WVP)
 {
-	glUseProgram(m_shader->program);
-	if (m_shader->m_a_positionLocation != -1)
-	{
-		//printf("pos ");
-		glEnableVertexAttribArray(m_shader->m_a_positionLocation);
-		glVertexAttribPointer(m_shader->m_a_positionLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, pos));
-	}
-	if (m_shader->m_a_normalLocation != -1)
-	{
-		//printf("norm ");
-		glEnableVertexAttribArray(m_shader->m_a_normalLocation);
-		glVertexAttribPointer(m_shader->m_a_normalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, norm));
-	}
-	if (m_shader->m_a_binormalLocation != -1)
-	{
-		//printf("binorm ");
-		glEnableVertexAttribArray(m_shader->m_a_binormalLocation);
-		glVertexAttribPointer(m_shader->m_a_binormalLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, binorm));
-	}
-	if (m_shader->m_a_tangentLocation != -1)
-	{
-		//printf("tangent ");
-		glEnableVertexAttribArray(m_shader->m_a_tangentLocation);
-		glVertexAttribPointer(m_shader->m_a_tangentLocation, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, tangent));
-	}
-	if (m_shader->m_a_uvLocation != -1)
-	{
-		//printf("uv ");
-		glEnableVertexAttribArray(m_shader->m_a_uvLocation);
-		glVertexAttribPointer(m_shader->m_a_uvLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, uv));
-	}
-	if (m_shader->m_u_wvpLocation != -1) {
-		//printf("wvp ");
-		glUniformMatrix4fv(m_shader->m_u_wvpLocation, 1, GL_FALSE, (GLfloat*)& m_WVP);
-	}
+	Material::PrepareShader(WVP);
 
-	if (m_shader->m_u_textureLocation != -1) {
+	glUseProgram(m_shader->program);
+	if (m_u_textureLocation != -1) {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_texture->GetTextureHandle());
-		glUniform1i(m_shader->m_u_textureLocation, 0);
+		glUniform1i(m_u_textureLocation, 0);
 	}
-	if (m_shader->m_u_displTexLocation != -1) {
+	if (m_u_displTexLocation != -1) {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, m_displTexture->GetTextureHandle());
-		glUniform1i(m_shader->m_u_displTexLocation, 1);
+		glUniform1i(m_u_displTexLocation, 1);
 	}
-	if (m_shader->m_u_alphaMaskTexLocation != -1) {
+	if (m_u_alphaMaskTexLocation != -1) {
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, m_alphaMaskTexture->GetTextureHandle());
-		glUniform1i(m_shader->m_u_alphaMaskTexLocation, 2);
+		glUniform1i(m_u_alphaMaskTexLocation, 2);
 	}
-	if (m_shader->m_u_displMaxLocation != -1) {
-		glUniform1f(m_shader->m_u_displMaxLocation, (GLfloat)m_displMax);
+	if (m_u_displMaxLocation != -1) {
+		glUniform1f(m_u_displMaxLocation, (GLfloat)m_displMax);
 	}
-	if (m_shader->m_u_timeLocation != -1) {
-		glUniform1f(m_shader->m_u_timeLocation, (GLfloat)(SceneManager::GetInstance()->m_time * m_timeScale));
-	}
-
-	// fog
-	if (m_shader->m_u_fogStartLocation != -1 && m_shader->m_u_fogLengthLocation != -1 && m_shader->m_u_fogColor != -1) {
-		glUniform1f(m_shader->m_u_fogStartLocation, SceneManager::GetInstance()->m_fogStart);
-		glUniform1f(m_shader->m_u_fogLengthLocation, SceneManager::GetInstance()->m_fogLength);
-		glUniform4fv(m_shader->m_u_fogColor, 1, (GLfloat*) & (SceneManager::GetInstance()->m_fogColor));
-		//Vector4 color = SceneManager::GetInstance()->m_fogColor;
-		//glUniform4f(m_shader->m_u_fogColor, color.x, color.y, color.z, color.w);
+	if (m_u_timeLocation != -1) {
+		glUniform1f(m_u_timeLocation, (GLfloat)(SceneManager::GetInstance()->m_time * m_timeScale));
 	}
 }

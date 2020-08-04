@@ -73,20 +73,27 @@ void SceneManager::Init(char * dataSceneFile) {
 		printf("[msg] SceneManager: Loaded Object %d\n",iObjectId);
 	}
 
-	float nearPlane, farPlane, fov, moveSpeed, flySpeed, rotateSpeed;
+	float nearPlane, farPlane, fov, angleLimit;
+	float moveSpeedX, moveSpeedY, moveSpeedZ, rotateSpeedV, rotateSpeedH, dutchSpeed;
 	Vector3 target;
 	fscanf(fIn, "\n#CAMERA\n");
 	fscanf(fIn, "NEAR %f\n", &nearPlane);
 	fscanf(fIn, "FAR %f\n", &farPlane);
 	fscanf(fIn, "FOV %f\n", &fov);
-	fscanf(fIn, "SPEED %f %f %f\n", &moveSpeed, &flySpeed, &rotateSpeed);
-	rotateSpeed = rotateSpeed * 2 * 3.1416 / 360;
+	fscanf(fIn, "LIMIT %f\n", &angleLimit);
+	angleLimit = angleLimit * 2 * M_PI / 360;
+	fscanf(fIn, "MOVE SPEED %f %f %f\n", &moveSpeedX, &moveSpeedY, &moveSpeedZ);
+	fscanf(fIn, "ROTATE SPEED %f %f\n", &rotateSpeedH, &rotateSpeedV);
+	fscanf(fIn, "DUTCH SPEED %f\n", &dutchSpeed);
+	rotateSpeedH = rotateSpeedH * 2 * M_PI / 360;
+	rotateSpeedV = rotateSpeedV * 2 * M_PI / 360;
+	dutchSpeed = dutchSpeed * 2 * M_PI / 360;
 	fscanf(fIn, "POSITION %f %f %f\n", &(position.x), &(position.y), &(position.z));
 	fscanf(fIn, "TARGET %f %f %f\n", &(target.x), &(target.y), &(target.z));
 	rotation = rotation * 2 * 3.1416 / 360;
 	Camera * camera = new Camera();
-	camera->Init(position, target, nearPlane, farPlane, fov, Globals::screenWidth/(float)Globals::screenHeight);
-	camera->SetSpeed(moveSpeed, flySpeed, rotateSpeed);
+	camera->Init(position, target, nearPlane, farPlane, fov, Globals::screenWidth/(float)Globals::screenHeight, angleLimit);
+	camera->SetSpeed(moveSpeedX, moveSpeedY, moveSpeedZ, rotateSpeedH, rotateSpeedV, dutchSpeed);
 	SetMainCamera(camera);
 	printf("[msg] SceneManager: Set up Camera\n");
 
@@ -108,7 +115,6 @@ void SceneManager::Update(float frameTime) {
 	for (int i = 0; i < m_listObject.size(); i++) {
 		m_listObject[i]->Update(frameTime);
 	}
-	m_mainCamera->Update(frameTime);
 }
 void SceneManager::Render() {
 	for (int i = 0; i < m_listObject.size(); i++) {

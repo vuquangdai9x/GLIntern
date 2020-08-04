@@ -98,7 +98,7 @@ Vector3 & GameObject::GetRotation()
 	return m_rotation;
 }
 
-void GameObject::Move(Vector3 deltaMove)
+void GameObject::MoveByWorldAxis(Vector3 deltaMove)
 {
 	m_position += deltaMove;
 	UpdateTranslateMatrix();

@@ -1,13 +1,12 @@
 #pragma once
 #include "Material.h"
 #include "Texture.h"
-#include "ShadersSingleTex.h"
 class MaterialSingleTexture : public Material {
 private:
 	Texture* m_texture;
-	ShadersSingleTex * m_shader;
+	GLint m_u_textureLocation;
 public:
 	MaterialSingleTexture(int id);
 	bool Init(int iShaderId, int iTextureId);
-	void PrepareShader(Matrix & m_WVP);
+	void PrepareShader(Matrix & WVP);
 };

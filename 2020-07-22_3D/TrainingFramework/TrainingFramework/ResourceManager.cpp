@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "ResourceManager.h"
-#include "ShadersSingleTex.h"
 #include "MaterialSingleTexture.h"
-#include "ShadersTerrain.h"
 #include "MaterialTerrain.h"
 #include "MaterialFire.h"
 #include "Globals.h"
@@ -43,7 +41,10 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		return;
 	}
 
-	// Load Model
+	//
+	// Load Models
+	//
+
 	int iNumOfModels;
 	// NOTE: length of file name can be not enough and cause error
 	char fileName[256];
@@ -85,7 +86,10 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		}
 	}
 
-	// Load Texture
+	//
+	// Load Textures
+	//
+
 	int iNumOfTextures;
 	fscanf(fIn, "\n#2D Textures: %d\n", &iNumOfTextures);
 	for (int i = 0; i < iNumOfTextures; i++) {
@@ -117,7 +121,10 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		}
 	}
 
-	// Load Cube Texture
+	//
+	// Load Cube Textures
+	//
+
 	int iNumOfCubeTextures;
 	fscanf(fIn, "\n#Cube Textures: %d\n", &iNumOfCubeTextures);
 	for (int i = 0; i < iNumOfCubeTextures; i++) {
@@ -182,7 +189,9 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		}
 	}
 
-	// Load Shader
+	//
+	// Load Shaders
+	//
 	
 	int iNumOfShaders;
 	// NOTE: length of file name can be not enough and cause error
@@ -194,7 +203,7 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		int iShaderId, iNumOfState;
 		char stateSetting[20];
 
-		fscanf(fIn, "ID %d %s\n", &iShaderId, &shaderType);
+		fscanf(fIn, "ID %d\n", &iShaderId);
 
 		fscanf(fIn, "VS: \"%[^\"]\"\n", fileName);
 		strcpy(vertexShaderFile, resourceDir);
@@ -207,20 +216,7 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		for (int j = 0; j < iNumOfState; j++) {
 			fscanf(fIn, "STATE %s\n", stateSetting);
 		}
-
-		if (strcmp("SINGLE", shaderType) == 0) {
-			shader = new ShadersSingleTex(iShaderId);
-		}
-		else if (strcmp("TERRAIN", shaderType) == 0) {
-			shader = new ShadersTerrain(iShaderId);
-		}
-		else if (strcmp("FIRE", shaderType) == 0) {
-			shader = new ShadersFire(iShaderId);
-		}
-		else {
-			printf("[ERR] ResourceManager: There no material has this type\n");
-		}
-
+		shader = new Shaders(iShaderId);
 		if (shader->Init(vertexShaderFile, fragmentShaderFile)) {
 			m_aShader.push_back(shader);
 			printf("[msg] ResourceManager: Loaded Shader %d :\n\tVS: %s\n\tFS: %s\n", iShaderId, vertexShaderFile, fragmentShaderFile);
@@ -231,7 +227,9 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		}
 	}
 
-	// Load material
+	//
+	// Load Materials
+	//
 	
 	int iNumOfMaterial, iMaterialId;
 	char materialType[20];

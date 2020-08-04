@@ -75,15 +75,6 @@
     <ClCompile Include="MaterialTerrain.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
-    <ClCompile Include="ShadersSingleTex.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadersTerrain.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
     <ClCompile Include="Model3D.cpp">
       <Filter>Source Files\objects</Filter>
     </ClCompile>
@@ -93,11 +84,11 @@
     <ClCompile Include="vertex.cpp">
       <Filter>Source Files\objects</Filter>
     </ClCompile>
-    <ClCompile Include="ShadersFire.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialFire.cpp">
       <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp">
+      <Filter>Source Files\objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,15 +128,6 @@
     <ClInclude Include="MaterialTerrain.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
-    <ClInclude Include="ShadersSingleTex.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadersTerrain.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
     <ClInclude Include="Model3D.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
@@ -155,11 +137,11 @@
     <ClInclude Include="Vertex.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
-    <ClInclude Include="ShadersFire.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
     <ClInclude Include="MaterialFire.h">
       <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>Header Files\objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
