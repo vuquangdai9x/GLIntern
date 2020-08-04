@@ -33,7 +33,7 @@ int Init ( ESContext *esContext )
 	SceneManager::GetInstance()->Init("Datas/scene.txt");
 	InputManager::CreateInstance();
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(1.0f, 0.8f, 1.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	return 0;
 }
