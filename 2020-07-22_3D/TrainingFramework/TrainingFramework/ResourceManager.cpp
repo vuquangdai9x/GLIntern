@@ -58,25 +58,24 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		strcpy(filePath, resourceDir);
 		strcat(filePath, fileName);
 
-		int iNumOfHeightmap;
-		int iHeightmapId;
-		float heightmapScaleFactor;
-		char heightmapFileName[256];
-		char heightmapFilePath[512];
-		fscanf(fIn, "HEIGHTMAP %d\n", &iNumOfHeightmap);
-		bool isLoadSuccessful;
-		if (iNumOfHeightmap > 0) {
-			fscanf(fIn, "FILE \"%[^\"]\" %f\n", heightmapFileName, &heightmapScaleFactor);
-			strcpy(heightmapFilePath, resourceDir);
-			strcat(heightmapFilePath, heightmapFileName);
-			isLoadSuccessful = model->LoadFromFile(filePath, heightmapFilePath, heightmapScaleFactor);
-		}
-		else {
+		bool isLoadSuccessful = true;
+
+		char* ext = strrchr(fileName, '.');
+		if (strcmp(".nfg", ext) == 0) {
 			isLoadSuccessful = model->LoadFromFile(filePath);
 		}
+		else if (strcmp(".raw", ext) == 0) {
+			int iWidth, iHeight;
+			float scale;
+			fscanf(fIn, "SIZE %d %d\n", &iWidth, &iHeight);
+			fscanf(fIn, "SCALE %f\n", &scale);
+			isLoadSuccessful = model->LoadFromRaw(filePath, iWidth, iHeight, scale);
+		}
+		else {
+			printf("[ERR] ResourceManager: This file extension is not supported: %s\n", ext);
+			isLoadSuccessful = false;
+		}
 
-		/*bool isLoadSuccessful;
-		isLoadSuccessful = model->LoadFromFile(filePath);*/
 		if (isLoadSuccessful) {
 			m_aModel.push_back(model);
 			printf("[msg] ResourceManager: Loaded Model %d : %s\n", iModelId, fileName);

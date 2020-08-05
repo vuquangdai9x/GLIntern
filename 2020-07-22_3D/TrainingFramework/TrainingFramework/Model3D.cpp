@@ -15,21 +15,14 @@ bool Model3D::LoadFromFile(char* filePath, char* heightMapFile, float heightMapS
 	if (fIn == NULL) {
 		return false;
 	}
-	/*char* ext = strrchr(filePath, '.');
-	if (strcmp(".nfg", ext)) {
 
-	}
-	else if (strcmp(".nfg", ext)) {
-
-	}
-	else {
-
-	}*/
+	Vertex* aVertex = NULL;
+	int* aIndice = NULL;
 
 	fscanf(fIn, "NrVertices: %d\n", &m_iNumOfVertex);
 	//printf("Num of vertices: %d\n", m_iNumOfVertex);
 
-	Vertex * aVertex = new Vertex[m_iNumOfVertex];
+	aVertex = new Vertex[m_iNumOfVertex];
 	float x, y, z, u, v, alpha;
 	int index;
 	unsigned int color;
@@ -43,7 +36,7 @@ bool Model3D::LoadFromFile(char* filePath, char* heightMapFile, float heightMapS
 		fscanf(fIn, "tgt:[%f, %f, %f]; ", &x, &y, &z);
 		aVertex[i].SetTangent(x, y, z);
 		fscanf(fIn, "uv:[%f, %f];\n", &u, &v);
-		aVertex[i].SetUV(u,v);
+		aVertex[i].SetUV(u, v);
 
 		//printf("Vertex %d:\n", index);
 		//aVertex[i].PrintInfo();
@@ -52,8 +45,8 @@ bool Model3D::LoadFromFile(char* filePath, char* heightMapFile, float heightMapS
 	fscanf(fIn, "NrIndices: %d\n", &m_iNumOfIndice);
 	//printf("Num of indices: %d\n", m_iNumOfIndice);
 	int v1, v2, v3;
-	int * aIndice = new int[m_iNumOfIndice];
-	for (int i = 0; i < m_iNumOfIndice/3; i++) {
+	aIndice = new int[m_iNumOfIndice];
+	for (int i = 0; i < m_iNumOfIndice / 3; i++) {
 		//0.    0, 1, 2
 		fscanf(fIn, "   %d.    %d,    %d,    %d", &index, &v1, &v2, &v3);
 		aIndice[3 * i] = v1;
@@ -62,28 +55,76 @@ bool Model3D::LoadFromFile(char* filePath, char* heightMapFile, float heightMapS
 		//printf("Indice %d: %d %d %d\n", i, v1, v2, v3);
 	}
 
+	glGenBuffers(1, &m_vboId);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_iNumOfVertex, aVertex, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	if (heightMapFile != NULL) {
-		int iWidth, iHeight, bpp;
-		char *imageData = LoadTGA(heightMapFile, &iWidth, &iHeight, &bpp);
-		if (imageData != NULL) {
-			Vector3 color;
-			int imgX, imgY;
-			for (int i = 0; i < m_iNumOfVertex; i++) {
-				imgX = aVertex[i].uv.x * iWidth;
-				imgY = aVertex[i].uv.y * iHeight;
-				
-				color.x = (unsigned char)imageData[(imgY * iWidth + imgX)*(bpp / 8) + 0] / (float)255;
-				color.y = (unsigned char)imageData[(imgY * iWidth + imgX)*(bpp / 8) + 1] / (float)255;
-				color.z = (unsigned char)imageData[(imgY * iWidth + imgX)*(bpp / 8) + 2] / (float)255;
+	glGenBuffers(1, &m_iboId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * m_iNumOfIndice, aIndice, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
- 				float h = ((0.3 * color.x) + (0.59 * color.y) + (0.11 * color.z));
-				aVertex[i].pos.y += heightMapScale * h;
-			}
-		}
-		delete[] imageData;
+	// clear memory
+	if (aVertex != NULL) delete[] aVertex;
+	if (aIndice != NULL) delete[] aIndice;
+	fclose(fIn);
+
+	return true;
+}
+
+bool Model3D::LoadFromRaw(char* filePath, int iWidth, int iHeight, float heightMapScale) {
+	FILE* fIn = fopen(filePath, "rb");
+	if (fIn == NULL) {
+		return false;
 	}
 
+	fseek(fIn, 0L, SEEK_END);
+	long int fileSize = ftell(fIn);
+	if (iWidth * iHeight != fileSize) {
+		printf("[ERR] Model3D: File size incompatible!\n");
+		return false;
+	}
+
+	fseek(fIn, 0L, SEEK_SET);
+	m_iNumOfVertex = iWidth * iHeight;
+	Vertex* aVertex = new Vertex[m_iNumOfVertex];
+	Vertex* v;
+	float y;
+	char c;
+	for (int z = 0; z < iHeight; z++) {
+		for (int x = 0; x < iWidth; x++) {
+			fscanf(fIn, "%c", &c);
+			y = (1 - (unsigned char)c / (float)255) * heightMapScale;
+			v = &aVertex[z * iHeight + x];
+			v->SetPosition(x,y,z);
+			v->SetNorm(0, 0, 0);
+			v->SetBinorm(0, 0, 0);
+			v->SetTangent(0, 0, 0);
+			v->SetUV(x / (float)iWidth, z / (float)iHeight);
+		}
+	}
+
+	m_iNumOfIndice = (iWidth - 1) * (iHeight - 1) * 2 * 3;
+	int* aIndice = new int[m_iNumOfIndice];
+	for (int z = 0; z < iHeight-1; z++) {
+		for (int x = 0; x < iWidth-1; x++) {
+			aIndice[(z * (iWidth - 1) + x) * 6 + 0] = z * iWidth + x;
+			aIndice[(z * (iWidth - 1) + x) * 6 + 1] = z * iWidth + x+1;
+			aIndice[(z * (iWidth - 1) + x) * 6 + 2] = (z+1) * iWidth + x;
+			aIndice[(z * (iWidth - 1) + x) * 6 + 3] = z * iWidth + x+1;
+			aIndice[(z * (iWidth - 1) + x) * 6 + 4] = (z+1) * iWidth + x;
+			aIndice[(z * (iWidth - 1) + x) * 6 + 5] = (z+1) * iWidth + x+1;
+		}
+	}
+
+	/*for (int i = 0;i < m_iNumOfVertex;i++) {
+		aVertex[i].PrintInfo();
+	}*/
+	/*for (int i = 0;i < m_iNumOfIndice;i++) {
+		printf("%d ", aIndice[i]);
+	}
+	printf("\n");*/
 
 	glGenBuffers(1, &m_vboId);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
@@ -99,89 +140,6 @@ bool Model3D::LoadFromFile(char* filePath, char* heightMapFile, float heightMapS
 	delete[] aVertex;
 	delete[] aIndice;
 	fclose(fIn);
-
-	return true;
-}
-
-bool LoadFromRaw(char* filePath, float heightMapScale = 1) {
-	//FILE* fIn = fopen(filePath, "r");
-	//if (fIn == NULL) {
-	//	return false;
-	//}
-
-	//fscanf(fIn, "NrVertices: %d\n", &m_iNumOfVertex);
-	////printf("Num of vertices: %d\n", m_iNumOfVertex);
-
-	//Vertex* aVertex = new Vertex[m_iNumOfVertex];
-	//float x, y, z, u, v, alpha;
-	//int index;
-	//unsigned int color;
-	//for (int i = 0; i < m_iNumOfVertex; i++) {
-	//	fscanf(fIn, " %d. pos:[%f, %f, %f]; ", &index, &x, &y, &z);
-	//	aVertex[i].SetPosition(x, y, z);
-	//	fscanf(fIn, "norm:[%f, %f, %f]; ", &x, &y, &z);
-	//	aVertex[i].SetNorm(x, y, z);
-	//	fscanf(fIn, "binorm:[%f, %f, %f]; ", &x, &y, &z);
-	//	aVertex[i].SetBinorm(x, y, z);
-	//	fscanf(fIn, "tgt:[%f, %f, %f]; ", &x, &y, &z);
-	//	aVertex[i].SetTangent(x, y, z);
-	//	fscanf(fIn, "uv:[%f, %f];\n", &u, &v);
-	//	aVertex[i].SetUV(u, v);
-
-	//	//printf("Vertex %d:\n", index);
-	//	//aVertex[i].PrintInfo();
-	//}
-
-	//fscanf(fIn, "NrIndices: %d\n", &m_iNumOfIndice);
-	////printf("Num of indices: %d\n", m_iNumOfIndice);
-	//int v1, v2, v3;
-	//int* aIndice = new int[m_iNumOfIndice];
-	//for (int i = 0; i < m_iNumOfIndice / 3; i++) {
-	//	//0.    0, 1, 2
-	//	fscanf(fIn, "   %d.    %d,    %d,    %d", &index, &v1, &v2, &v3);
-	//	aIndice[3 * i] = v1;
-	//	aIndice[3 * i + 1] = v2;
-	//	aIndice[3 * i + 2] = v3;
-	//	//printf("Indice %d: %d %d %d\n", i, v1, v2, v3);
-	//}
-
-
-	//if (heightMapFile != NULL) {
-	//	int iWidth, iHeight, bpp;
-	//	char* imageData = LoadTGA(heightMapFile, &iWidth, &iHeight, &bpp);
-	//	if (imageData != NULL) {
-	//		Vector3 color;
-	//		int imgX, imgY;
-	//		for (int i = 0; i < m_iNumOfVertex; i++) {
-	//			imgX = aVertex[i].uv.x * iWidth;
-	//			imgY = aVertex[i].uv.y * iHeight;
-
-	//			color.x = (unsigned char)imageData[(imgY * iWidth + imgX) * (bpp / 8) + 0] / (float)255;
-	//			color.y = (unsigned char)imageData[(imgY * iWidth + imgX) * (bpp / 8) + 1] / (float)255;
-	//			color.z = (unsigned char)imageData[(imgY * iWidth + imgX) * (bpp / 8) + 2] / (float)255;
-
-	//			float h = ((0.3 * color.x) + (0.59 * color.y) + (0.11 * color.z));
-	//			aVertex[i].pos.y += heightMapScale * h;
-	//		}
-	//	}
-	//	delete[] imageData;
-	//}
-
-
-	//glGenBuffers(1, &m_vboId);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_iNumOfVertex, aVertex, GL_STATIC_DRAW);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	//glGenBuffers(1, &m_iboId);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * m_iNumOfIndice, aIndice, GL_STATIC_DRAW);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	//// clear memory
-	//delete[] aVertex;
-	//delete[] aIndice;
-	//fclose(fIn);
 
 	return true;
 }

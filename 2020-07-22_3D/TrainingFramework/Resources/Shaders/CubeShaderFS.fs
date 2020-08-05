@@ -9,6 +9,6 @@ varying float v_fogDensity;
 void main(void)
 {
 	vec4 color = textureCube(u_mainTexture, v_pos);
-	//gl_FragColor = u_fogColor * v_fogDensity + color * (1.0 - v_fogDensity);
-	gl_FragColor = color;
+	gl_FragColor = color + v_fogDensity / 2.0 * (u_fogColor - color);
+	//gl_FragColor = color;
 }

@@ -13,5 +13,5 @@ public:
 	int m_iNumOfVertex, m_iNumOfIndice;
 
 	bool LoadFromFile(char* filePath, char* heightMapFile = NULL, float heightMapScale = 1);
-	bool LoadFromRaw(char* filePath, float heightMapScale = 1);
+	bool LoadFromRaw(char* filePath, int iWidth, int iHeight, float heightMapScale = 1);
 };

@@ -40,8 +40,8 @@ void Vertex::SetTangent(float x, float y, float z) {
 
 void Vertex::PrintInfo() {
 	printf("Position: %f, %f, %f\n", pos.x, pos.y, pos.z);
-	printf("Norm: %f, %f, %f\n", norm.x, norm.y, norm.z);
+	/*printf("Norm: %f, %f, %f\n", norm.x, norm.y, norm.z);
 	printf("Binorm: %f, %f, %f\n", binorm.x, binorm.y, binorm.z);
 	printf("Tangent: %f, %f, %f\n", tangent.x, tangent.y, tangent.z);
-	printf("UV: %f, %f\n", uv.x, uv.y);
+	printf("UV: %f, %f\n", uv.x, uv.y);*/
 }
