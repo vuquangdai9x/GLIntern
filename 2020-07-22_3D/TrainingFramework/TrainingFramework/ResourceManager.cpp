@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ResourceManager.h"
-#include "MaterialSingleTexture.h"
 #include "MaterialTerrain.h"
 #include "MaterialFire.h"
 #include "Globals.h"
@@ -65,7 +64,6 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		char heightmapFileName[256];
 		char heightmapFilePath[512];
 		fscanf(fIn, "HEIGHTMAP %d\n", &iNumOfHeightmap);
-		
 		bool isLoadSuccessful;
 		if (iNumOfHeightmap > 0) {
 			fscanf(fIn, "FILE \"%[^\"]\" %f\n", heightmapFileName, &heightmapScaleFactor);
@@ -76,6 +74,9 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 		else {
 			isLoadSuccessful = model->LoadFromFile(filePath);
 		}
+
+		/*bool isLoadSuccessful;
+		isLoadSuccessful = model->LoadFromFile(filePath);*/
 		if (isLoadSuccessful) {
 			m_aModel.push_back(model);
 			printf("[msg] ResourceManager: Loaded Model %d : %s\n", iModelId, fileName);
@@ -236,19 +237,18 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 	fscanf(fIn, "\n#Materials: %d\n", &iNumOfMaterial);
 	for (int i = 0; i < iNumOfMaterial; i++) {
 		fscanf(fIn, "ID %d %s\n", &iMaterialId, materialType);
-		if (strcmp("SINGLE", materialType) == 0) {
-			MaterialSingleTexture * pMaterialSingle;
-			int iShaderId, iTextureId;
-			pMaterialSingle = new MaterialSingleTexture(iMaterialId);
+		if (strcmp("DEFAULT", materialType) == 0) {
+			Material * pMaterial;
+			int iShaderId;
+			pMaterial = new Material(iMaterialId);
 			fscanf(fIn, "SHADER %d\n", &iShaderId);
-			fscanf(fIn, "TEXTURE %d\n", &iTextureId);
-			if (pMaterialSingle->Init(iShaderId, iTextureId)) {
-				m_aMaterial.push_back(pMaterialSingle);
-				printf("[msg] ResourceManager: Loaded Material %d : Shader = %d ; Texture = %d\n", iMaterialId, iShaderId, iTextureId);
+			if (pMaterial->Init(iShaderId)) {
+				m_aMaterial.push_back(pMaterial);
+				printf("[msg] ResourceManager: Loaded Default Material %d : Shader = %d\n", iMaterialId, iShaderId);
 			}
 			else {
-				printf("[ERR] ResourceManager: Failed to load Material %d : Shader = %d ; Texture = %d\n", iMaterialId, iShaderId, iTextureId);
-				delete pMaterialSingle;
+				printf("[ERR] ResourceManager: Failed to load Default Material %d : Shader = %d\n", iMaterialId, iShaderId);
+				delete pMaterial;
 			}
 		}
 		else if (strcmp("TERRAIN", materialType) == 0) {
@@ -260,40 +260,30 @@ void ResourceManager::LoadResources(char * dataResourceFile)
 			fscanf(fIn, "TEXTURES %d %d %d\n", &iTex1Id, &iTex2Id, &iTex3Id);
 			if (pMaterialTerrain->Init(iShaderId, iBlendTexId, iTex1Id, iTex2Id, iTex3Id)) {
 				m_aMaterial.push_back(pMaterialTerrain);
-				printf("[msg] ResourceManager: Loaded Material %d\n", iMaterialId);
+				printf("[msg] ResourceManager: Loaded Terrain Material %d\n", iMaterialId);
 			}
 			else {
-				printf("[ERR] ResourceManager: Failed to load Material %d\n", iMaterialId);
+				printf("[ERR] ResourceManager: Failed to load Terrain Material %d\n", iMaterialId);
 				delete pMaterialTerrain;
 				pMaterialTerrain = NULL;
-			}
-
-			int iNumOfHeightmaps;
-			int iHeightmapId;
-			float heightmapScaleFactor;
-			fscanf(fIn, "HEIGHTMAP %d ", &iNumOfHeightmaps);
-			if (iNumOfHeightmaps >= 1) {
-				fscanf(fIn, "%d %f\n", &iHeightmapId, &heightmapScaleFactor);
-				if (pMaterialTerrain != NULL) pMaterialTerrain->AddHeightmap(iHeightmapId, heightmapScaleFactor);
 			}
 		}
 		else if (strcmp("FIRE", materialType) == 0) {
 			MaterialFire* pMaterialFire;
-			int iShaderId, iTexId, iDisplTexId, iAlphaMaskTexId;
+			int iShaderId, iDisplTexId, iAlphaMaskTexId;
 			float displMax, timeScale;
 			pMaterialFire = new MaterialFire(iMaterialId);
 			fscanf(fIn, "SHADER %d\n", &iShaderId);
-			fscanf(fIn, "TEXTURE %d\n", &iTexId);
 			fscanf(fIn, "DISPLTEX %d\n", &iDisplTexId);
 			fscanf(fIn, "ALPHAMASK %d\n", &iAlphaMaskTexId);
 			fscanf(fIn, "DISPLMAX %f\n", &displMax);
 			fscanf(fIn, "TIMESCALE %f\n", &timeScale);
-			if (pMaterialFire->Init(iShaderId, iTexId, iDisplTexId, iAlphaMaskTexId, displMax, timeScale)) {
+			if (pMaterialFire->Init(iShaderId, iDisplTexId, iAlphaMaskTexId, displMax, timeScale)) {
 				m_aMaterial.push_back(pMaterialFire);
-				printf("[msg] ResourceManager: Loaded Material %d\n", iMaterialId);
+				printf("[msg] ResourceManager: Loaded Fire Material %d\n", iMaterialId);
 			}
 			else {
-				printf("[ERR] ResourceManager: Failed to load Material %d\n", iMaterialId);
+				printf("[ERR] ResourceManager: Failed to load Fire Material %d\n", iMaterialId);
 				delete pMaterialFire;
 				pMaterialFire = NULL;
 			}

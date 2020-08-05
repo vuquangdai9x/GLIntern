@@ -15,6 +15,16 @@ bool Model3D::LoadFromFile(char* filePath, char* heightMapFile, float heightMapS
 	if (fIn == NULL) {
 		return false;
 	}
+	/*char* ext = strrchr(filePath, '.');
+	if (strcmp(".nfg", ext)) {
+
+	}
+	else if (strcmp(".nfg", ext)) {
+
+	}
+	else {
+
+	}*/
 
 	fscanf(fIn, "NrVertices: %d\n", &m_iNumOfVertex);
 	//printf("Num of vertices: %d\n", m_iNumOfVertex);

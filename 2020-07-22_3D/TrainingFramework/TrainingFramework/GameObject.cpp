@@ -36,7 +36,7 @@ void GameObject::Init()
 	
 }
 
-void GameObject::Init(Vector3 position, Vector3 rotation, Vector3 scale, int iModelId, int iMaterialId)
+void GameObject::Init(Vector3 position, Vector3 rotation, Vector3 scale, int iModelId, int iMaterialId, int iMainTextureId)
 {
 	SetPosition(position);
 	SetRotation(rotation);
@@ -46,12 +46,16 @@ void GameObject::Init(Vector3 position, Vector3 rotation, Vector3 scale, int iMo
 	m_model = ResourceManager::GetInstance()->GetModel(iModelId);
 	if (m_model == NULL) {
 		m_canRender = false;
-		printf("[ERR] Renderer3D: Failed to get model %d\n", iModelId);
+		printf("[ERR] GameObject: Failed to get model %d\n", iModelId);
 	}
 	m_material = ResourceManager::GetInstance()->GetMaterial(iMaterialId);
 	if (m_material == NULL) {
 		m_canRender = false;
-		printf("[ERR] Renderer3D: Failed to get material %d\n", iMaterialId);
+		printf("[ERR] GameObject: Failed to get material %d\n", iMaterialId);
+	}
+	m_mainTexture = ResourceManager::GetInstance()->GetTexture(iMainTextureId);
+	if (m_mainTexture == NULL) {
+		printf("[ERR] GameObject: Failed to get main texture %d\n", iMainTextureId);
 	}
 }
 
@@ -63,10 +67,11 @@ void GameObject::Render(Camera * mainCamera)
 {
 	if (!m_canRender) return;
 	m_WVP = m_transformMat * mainCamera->GetViewMatrix() * mainCamera->GetPerspectiveMatrix();
-
+	//m_WVP = m_transformMat;
 	glBindBuffer(GL_ARRAY_BUFFER, m_model->m_vboId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_model->m_iboId);
 
+	m_material->SetMainTexture(m_mainTexture);
 	m_material->PrepareShader(m_WVP);
 
 	glDrawElements(GL_TRIANGLES, m_model->m_iNumOfIndice, GL_UNSIGNED_INT, 0);

@@ -69,9 +69,6 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialSingleTexture.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialTerrain.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
@@ -120,9 +117,6 @@
       <Filter>Header Files\objects</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialSingleTexture.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
     <ClInclude Include="MaterialTerrain.h">
@@ -298,6 +292,9 @@
       <Filter>Resources\Datas</Filter>
     </Text>
     <Text Include="..\Resources\Datas\scene.txt">
+      <Filter>Resources\Datas</Filter>
+    </Text>
+    <Text Include="..\Resources\Datas\scene2.txt">
       <Filter>Resources\Datas</Filter>
     </Text>
   </ItemGroup>

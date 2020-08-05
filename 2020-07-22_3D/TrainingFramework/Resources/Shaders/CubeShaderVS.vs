@@ -13,9 +13,10 @@ void main()
 	vec4 position = u_wvp*vec4(a_posL, 1.0);
 	gl_Position = position;
 	
-	float distanceToCam = sqrt(position.x*position.x+position.y*position.y+position.z*position.z);
+	//float distanceToCam = sqrt(position.x*position.x+position.y*position.y+position.z*position.z);
 	//float distanceToCam = position.z;
-	v_fogDensity = clamp((distanceToCam-u_fogStart)/u_fogLength,0.0,1.0);
+	//v_fogDensity = clamp((distanceToCam-u_fogStart)/u_fogLength,0.0,1.0);
+	v_fogDensity = 0.5;
 
 	v_pos = a_posL;
 }

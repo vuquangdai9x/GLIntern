@@ -31,6 +31,7 @@ void SceneManager::Init(char * dataSceneFile) {
 	int iNumOfObject, iObjectId = 0;
 	int iModelId;
 	int iMaterialId;
+	int iMainTexId;
 	/*int iNumOfTexture, iNumOfCubeTexture, iShaderId;
 	int * aiTextureId, *aiCubeTexId;*/
 	Vector3 position, rotation, scale;
@@ -58,19 +59,20 @@ void SceneManager::Init(char * dataSceneFile) {
 		//obj->GetRenderer().Init(iModelId, iNumOfTexture, aiTextureId, iNumOfCubeTexture, aiCubeTexId, iShaderId);
 		
 		fscanf(fIn, "MATERIAL %d\n", &iMaterialId); 
+		fscanf(fIn, "MAINTEX %d\n", &iMainTexId);
 		fscanf(fIn, "POSITION %f %f %f\n", &(position.x), &(position.y), &(position.z));
 		fscanf(fIn, "ROTATION %f %f %f\n", &(rotation.x), &(rotation.y), &(rotation.z));
 		rotation = rotation * 2 * 3.1416 / 360;
 		fscanf(fIn, "SCALE %f %f %f\n", &(scale.x), &(scale.y), &(scale.z));
 		
-		obj->Init(position,rotation,scale, iModelId, iMaterialId);
-		
+		obj->Init(position,rotation,scale, iModelId, iMaterialId, iMainTexId);
+
 		AddObject(obj);
 
 		/*delete[] aiCubeTexId;
 		delete[] aiTextureId;*/
 
-		printf("[msg] SceneManager: Loaded Object %d\n",iObjectId);
+		printf("[msg] SceneManager: Loaded Object %d\n\tModel: %d\n\tMaterial: %d\n\tMain Texture: %d\n",iObjectId, iModelId, iMaterialId, iMainTexId);
 	}
 
 	float nearPlane, farPlane, fov, angleLimit;

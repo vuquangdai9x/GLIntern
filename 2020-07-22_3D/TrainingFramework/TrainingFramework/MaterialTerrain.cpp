@@ -18,8 +18,6 @@ bool MaterialTerrain::Init(int iShaderId, int iBlendTextureId, int iTexture1Id, 
 	m_u_Tex1Location = glGetUniformLocation(m_shader->program, "u_texture[1]");
 	m_u_Tex2Location = glGetUniformLocation(m_shader->program, "u_texture[2]");
 	m_u_Tex3Location = glGetUniformLocation(m_shader->program, "u_texture[3]");
-	m_u_heightmapLocation = glGetUniformLocation(m_shader->program, "u_heightmap");
-	m_u_heightmapScaleFactorLocation = glGetUniformLocation(m_shader->program, "u_heightmapScaleFactor");
 
 	m_blendTexture = ResourceManager::GetInstance()->GetTexture(iBlendTextureId);
 	if (m_blendTexture == NULL) {
@@ -44,46 +42,29 @@ bool MaterialTerrain::Init(int iShaderId, int iBlendTextureId, int iTexture1Id, 
 	return isLoadSuccessfully;
 }
 
-bool MaterialTerrain::AddHeightmap(int iHeightmapId, float heightmapScaleFactor)
-{
-	m_heightmap = ResourceManager::GetInstance()->GetTexture(iHeightmapId);
-	if (m_heightmap == NULL) {
-		if (m_heightmap == NULL) printf("[ERR] Material: Failed to get shader %d\n", iHeightmapId);
-		return false;
-	}
-	m_heightmapScaleFactor = heightmapScaleFactor;
-	return true;
-}
-
 void MaterialTerrain::PrepareShader(Matrix & WVP)
 {
 	Material::PrepareShader(WVP);
 
 	glUseProgram(m_shader->program);
-	if (m_u_blendtexLocation != -1) {
+	if (m_u_blendtexLocation != -1 && m_blendTexture != NULL) {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_blendTexture->GetTextureHandle());
 		glUniform1i(m_u_blendtexLocation, 0);
 	}
-	if (m_u_Tex1Location != -1) {
+	if (m_u_Tex1Location != -1 && m_texture1 != NULL) {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, m_texture1->GetTextureHandle());
 		glUniform1i(m_u_Tex1Location, 1);
 	}
-	if (m_u_Tex2Location != -1) {
+	if (m_u_Tex2Location != -1 && m_texture2 != NULL) {
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, m_texture2->GetTextureHandle());
 		glUniform1i(m_u_Tex2Location, 2);
 	}
-	if (m_u_Tex3Location != -1) {
+	if (m_u_Tex3Location != -1 && m_texture3 != NULL) {
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, m_texture3->GetTextureHandle());
 		glUniform1i(m_u_Tex3Location, 3);
-	}
-	if (m_u_heightmapLocation != -1 && m_u_heightmapScaleFactorLocation != -1) {
-		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, m_heightmap->GetTextureHandle());
-		glUniform1i(m_u_heightmapLocation, 4);
-		glUniform1f(m_u_heightmapScaleFactorLocation, (GLfloat)m_heightmapScaleFactor);
 	}
 }
